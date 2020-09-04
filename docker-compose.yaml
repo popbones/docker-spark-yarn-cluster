@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+
+  mycluster-master:
+    image: pierrekieffer/spark-hadoop-cluster
+    depends_on:
+      - mycluster-slave-1
+      - mycluster-slave-2
+    hostname: mycluster-master
+    ports:
+      - "8080:8080"
+      - "8088:8088"
+      - "50070:50070"
+      - "50090:50090"
+    working_dir: /usr/local/spark
+    entrypoint: bash
+    command:
+      - -c
+      - service ssh start && /usr/local/hadoop/spark-services.sh && tail -f /dev/null
+
+  mycluster-slave-1:
+    image: pierrekieffer/spark-hadoop-cluster
+    hostname: mycluster-slave-1
+    entrypoint: bash
+    command:
+      - -c
+      - service ssh start && tail -f /dev/null
+
+  mycluster-slave-2:
+    image: pierrekieffer/spark-hadoop-cluster
+    hostname: mycluster-slave-2
+    entrypoint: bash
+    command:
+      - -c 
+      - service ssh start && tail -f /dev/null
+  
