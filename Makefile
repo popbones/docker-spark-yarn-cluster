@@ -7,3 +7,5 @@ logs:
 down:
 	docker-compose down
 
+build:
+	docker build -t pierrekieffer/spark-hadoop-cluster .
