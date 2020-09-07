@@ -1,0 +1,4 @@
+[submodule "testdata/spark-hello-world"]
+	path = testdata/spark-hello-world
+	url = git@github.com:popbones/spark-hello-world.git
+	branch = master
