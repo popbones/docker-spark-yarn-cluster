@@ -14,20 +14,16 @@ services:
     ports:
       - "8080:8080"
       - "8088:8088"
-      # - "8030:8030"
-      # - "8031:8031"
-      # - "8032:8032"
-      # - "8033:8033"
-      # - "9000:9000"
-      # - "9000:9000/udp"
       - "50070:50070"
       - "50090:50090"
-      # - "50010:50010"
+      - "9000:9000"
     working_dir: /usr/local/spark
     entrypoint: bash
     command:
       - -c
       - service ssh start && /usr/local/hadoop/spark-services.sh && tail -f /dev/null
+    volumes:
+      - "$PWD/testdata/HelloWorld.jar:/testdata/HelloWorld.jar"
 
   mycluster-slave-1:
     image: popbones/spark-hadoop-cluster
@@ -35,10 +31,14 @@ services:
       context: .
       dockerfile: hadoop.Dockerfile
     hostname: mycluster-slave-1
+    ports:
+      - "8041:8042"
     entrypoint: bash
     command:
       - -c
       - service ssh start && tail -f /dev/null
+    volumes:
+      - "$PWD/testdata/HelloWorld.jar:/testdata/HelloWorld.jar"
 
   mycluster-slave-2:
     image: popbones/spark-hadoop-cluster
@@ -46,10 +46,14 @@ services:
       context: .
       dockerfile: hadoop.Dockerfile
     hostname: mycluster-slave-2
+    ports:
+      - "8042:8042"
     entrypoint: bash
     command:
       - -c 
       - service ssh start && tail -f /dev/null
+    volumes:
+      - "$PWD/testdata/HelloWorld.jar:/testdata/HelloWorld.jar"
   
   apache-livy:
     image: popbones/livy
@@ -65,6 +69,6 @@ services:
       SPARK_CONF_DIR: /etc/spark
       HADOOP_CONF_DIR: /etc/hadoop
     volumes:
-      - "$PWD/config/livy.conf:/usr/local/livy/conf/livy.conf"
+      - "$PWD/config/livy/livy.conf:/usr/local/livy/conf/livy.conf"
       - "$PWD/config/hadoop:/etc/hadoop"
       - "$PWD/config/spark:/etc/spark"
