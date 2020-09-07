@@ -1,6 +1,5 @@
 FROM ubuntu:16.04
 
-
 USER root
 
 RUN apt-get update && apt-get -y dist-upgrade && apt-get install -y openssh-server default-jdk wget scala
@@ -8,18 +7,19 @@ RUN  apt-get -y update
 RUN  apt-get -y install zip 
 RUN  apt-get -y install vim
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+ENV SPARK_VERSION=2.4.5
 
 RUN ssh-keygen -t rsa -f $HOME/.ssh/id_rsa -P "" \
     && cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
 
-RUN wget -O /hadoop.tar.gz -q http://archive.apache.org/dist/hadoop/core/hadoop-2.7.3/hadoop-2.7.3.tar.gz \
+RUN wget -O /hadoop.tar.gz http://archive.apache.org/dist/hadoop/core/hadoop-2.7.3/hadoop-2.7.3.tar.gz \
         && tar xfz hadoop.tar.gz \
         && mv /hadoop-2.7.3 /usr/local/hadoop \
         && rm /hadoop.tar.gz
 
-RUN wget -O /spark.tar.gz -q https://archive.apache.org/dist/spark/spark-2.4.1/spark-2.4.1-bin-hadoop2.7.tgz
+RUN wget -O /spark.tar.gz https://archive.apache.org/dist/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-hadoop2.7.tgz
 RUN tar xfz spark.tar.gz
-RUN mv /spark-2.4.1-bin-hadoop2.7 /usr/local/spark
+RUN mv /spark-$SPARK_VERSION-bin-hadoop2.7 /usr/local/spark
 RUN rm /spark.tar.gz
 
 
