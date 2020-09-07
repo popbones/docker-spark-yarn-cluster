@@ -30,17 +30,16 @@ ENV PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$SPARK_HOME/bin:$SPARK_HOME:sb
 RUN mkdir -p $HADOOP_HOME/hdfs/namenode \
         && mkdir -p $HADOOP_HOME/hdfs/datanode
 
-
 COPY config/ /tmp/
-RUN mv /tmp/ssh_config $HOME/.ssh/config \
-    && mv /tmp/hadoop-env.sh $HADOOP_HOME/etc/hadoop/hadoop-env.sh \
-    && mv /tmp/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml \
-    && mv /tmp/hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xml \
-    && mv /tmp/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml.template \
+RUN mv /tmp/ssh/ssh_config $HOME/.ssh/config \
+    && mv /tmp/hadoop/hadoop-env.sh $HADOOP_HOME/etc/hadoop/hadoop-env.sh \
+    && mv /tmp/hadoop/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml \
+    && mv /tmp/hadoop/hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xml \
+    && mv /tmp/hadoop/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml.template \
     && cp $HADOOP_HOME/etc/hadoop/mapred-site.xml.template $HADOOP_HOME/etc/hadoop/mapred-site.xml \
-    && mv /tmp/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml \
-    && cp /tmp/slaves $HADOOP_HOME/etc/hadoop/slaves \
-    && mv /tmp/slaves $SPARK_HOME/conf/slaves \
+    && mv /tmp/hadoop/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml \
+    && cp /tmp/hadoop/slaves $HADOOP_HOME/etc/hadoop/slaves \
+    && mv /tmp/hadoop/slaves $SPARK_HOME/conf/slaves \
     && mv /tmp/spark/spark-env.sh $SPARK_HOME/conf/spark-env.sh \
     && mv /tmp/spark/log4j.properties $SPARK_HOME/conf/log4j.properties \
     && mv /tmp/spark/spark.defaults.conf $SPARK_HOME/conf/spark.defaults.conf
@@ -48,7 +47,6 @@ RUN mv /tmp/ssh_config $HOME/.ssh/config \
 ADD scripts/spark-services.sh $HADOOP_HOME/spark-services.sh
 
 RUN chmod 744 -R $HADOOP_HOME
-
 
 RUN $HADOOP_HOME/bin/hdfs namenode -format
 
