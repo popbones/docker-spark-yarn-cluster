@@ -3,7 +3,10 @@ version: "3"
 services:
 
   mycluster-master:
-    image: pierrekieffer/spark-hadoop-cluster
+    image: popbones/spark-hadoop-cluster
+    build:
+      context: .
+      dockerfile: hadoop.Dockerfile
     depends_on:
       - mycluster-slave-1
       - mycluster-slave-2
@@ -11,8 +14,15 @@ services:
     ports:
       - "8080:8080"
       - "8088:8088"
+      # - "8030:8030"
+      # - "8031:8031"
+      # - "8032:8032"
+      # - "8033:8033"
+      # - "9000:9000"
+      # - "9000:9000/udp"
       - "50070:50070"
       - "50090:50090"
+      # - "50010:50010"
     working_dir: /usr/local/spark
     entrypoint: bash
     command:
@@ -20,7 +30,10 @@ services:
       - service ssh start && /usr/local/hadoop/spark-services.sh && tail -f /dev/null
 
   mycluster-slave-1:
-    image: pierrekieffer/spark-hadoop-cluster
+    image: popbones/spark-hadoop-cluster
+    build:
+      context: .
+      dockerfile: hadoop.Dockerfile
     hostname: mycluster-slave-1
     entrypoint: bash
     command:
@@ -28,10 +41,30 @@ services:
       - service ssh start && tail -f /dev/null
 
   mycluster-slave-2:
-    image: pierrekieffer/spark-hadoop-cluster
+    image: popbones/spark-hadoop-cluster
+    build:
+      context: .
+      dockerfile: hadoop.Dockerfile
     hostname: mycluster-slave-2
     entrypoint: bash
     command:
       - -c 
       - service ssh start && tail -f /dev/null
   
+  apache-livy:
+    image: popbones/livy
+    build:
+      context: .
+      dockerfile: livy.Dockerfile
+    depends_on:
+      - mycluster-master
+    hostname: apache-livy
+    ports:
+      - 8998:8998
+    environment:
+      SPARK_CONF_DIR: /etc/spark
+      HADOOP_CONF_DIR: /etc/hadoop
+    volumes:
+      - "$PWD/config/livy.conf:/usr/local/livy/conf/livy.conf"
+      - "$PWD/config/hadoop:/etc/hadoop"
+      - "$PWD/config/spark:/etc/spark"
