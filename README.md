@@ -1,30 +1,48 @@
-# Docker hadoop yarn cluster for spark 2.4.1
+# Hadoop with Spark on Yarn in Docker
 
-## docker-spark-yarn-cluster 
-This application allows to deploy multi-nodes hadoop cluster with spark 2.4.1 on yarn. 
+This repo contains a simple local setup of Hadoop cluster with Spark running on Yarn. An Apache Livy is also included.
 
-## Build image
-- Clone the repo 
-- cd inside ../docker-spark-yarn-cluster 
-- Run `docker build -t pierrekieffer/spark-hadoop-cluster .`
+This is for Spark newbies to get handson with Hadoop/Spark/Yran locally.
 
-## Run  
-- Run `./startHadoopCluster.sh`
-- Access to master `docker exec -it mycluster-master bash`
+* Hadoop Version: 2.7.3
+* Spark Verson: 2.4.5
+* Livy Version: 0.7.0
 
-### Run spark applications on cluster : 
+This repo uses git submodules. So after clone please remember to run
+
+```
+git submodule init && git submodule update
+```
+
+## Start Up
+
+```
+make up logs
+```
+
+This will build all the images and start all the services in the background and start tailing the log.
+
+* Hadoop UI: http://localhost:8088
+
+* HDFS UI: http://localhost:50070
+
+* Spark UI: http://localhost:8080
+
+* Livy UI: http://localhost:8998
+
+## Use
+
+You can test everything is working by submit a hello world Spark application via Livy.
+
+You can do this with `make livy-test`.
+
+Beyond that you can just use it as a normal Spark on YARN.
+
 - spark-shell : `spark-shell --master yarn --deploy-mode client`
 - spark : `spark-submit --master yarn --deploy-mode client or cluster --num-executors 2 --executor-memory 4G --executor-cores 4 --class org.apache.spark.examples.SparkPi $SPARK_HOME/examples/jars/spark-examples_2.11-2.4.1.jar`
 
-- Access to Hadoop cluster Web UI : <container ip>:8088 
-- Access to spark Web UI : <container ip>:8080
-- Access to hdfs Web UI : <container ip>:50070
-  
-## Stop 
-- `docker stop $(docker ps -a -q)`
-- `docker container prune`
+## Shutdown
 
-
-
-
-
+```
+make down
+```
